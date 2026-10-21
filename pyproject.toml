@@ -1,0 +1,31 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "wjem-ed-audit"
+version = "0.1.0"
+description = "Research code for retrospective information-source audits of ED prediction models"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "numpy>=1.24,<3",
+    "pandas>=2.0,<4",
+    "pyarrow>=12,<30",
+    "scipy>=1.10,<2",
+    "scikit-learn>=1.2,<2",
+    "PyYAML>=6,<7",
+    "joblib>=1.2,<2",
+    "matplotlib>=3.7,<4",
+]
+
+[project.optional-dependencies]
+models = ["torch>=2.2,<3", "xgboost>=2,<4", "lightgbm>=4,<5"]
+text = ["transformers>=4.38,<5"]
+dev = ["pytest>=7,<10"]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
