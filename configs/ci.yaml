@@ -1,0 +1,60 @@
+# CI mini config: fast chain validation (CPU-friendly), not for results
+data:
+  source: synthetic
+  mimic_dir: null
+  n_stays: 2000
+  cache_dir: data/cache_ci
+  seed: 7
+
+tasks: [critical]
+main_task: critical
+
+splits:
+  random_test_size: 0.2
+  random_val_size: 0.2
+  temporal_cutoff: "2017-01-01"
+
+seeds: [0]
+
+baselines:
+  models: [lr, lgbm]
+  clinical_scores: [news2, qsofa]
+
+text:
+  encoder: hashing  # Explicit offline synthetic fixture; not the historical encoder.
+  max_len: 32
+  fallback: hashing
+  batch_size: 64
+
+tlqt:
+  d_model: 128
+  n_layers: 4
+  n_heads: 4
+  n_query: 28  # sum(query_groups)
+  query_groups: {C: 16, J: 4, P: 4, D: 4}
+  dropout: 0.1
+  horizon_h: 6
+  batch_size: 256
+  epochs: 2
+  lr: 0.001
+  weight_decay: 0.01
+  early_stop_patience: 2
+  bf16: false
+
+audit:
+  e1_combos:
+    full: [C, J, P, D]
+    clin_only: [C, D]
+    meta_only: [J, P, D]
+    noJ: [C, P, D]
+    noP: [C, J, D]
+  e2_fields: [acuity, arrival_transport, hour_of_day, day_of_week, n_ed_visits_365d]
+  bootstrap: 100
+  alpha: 0.05
+
+eval:
+  subgroups: [anchor_age, gender, arrival_transport, acuity]
+  dca_thresholds: [0.01, 0.5, 50]
+
+results_root: results_ci
+device: cpu
